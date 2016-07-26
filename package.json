@@ -2,7 +2,7 @@
   "name": "cloud-visionator",
   "version": "1.0.0",
   "description": "This is a simple demonstration of using the Google Cloud Vision API to detect elements using a webcam. ",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "start": "GCLOUD_PROJECT=nodesummit node server.js",
     "debug": "GCLOUD_PROJECT=nodesummit node --inspect server.js",

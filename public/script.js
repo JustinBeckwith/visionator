@@ -101,11 +101,16 @@ function takepicture() {
     body: form
   }).then((response) => {
     return response.json();
-  }).then((labels) => {
-    console.log(labels);
+  }).then((features) => {
+    console.log(features);
     var found = false;
-    var text = labels.join(', ');
+    var text = features.labels.join(', ');
     showMessage(text);
+    clearImage = true;
+  }).catch((err) => {
+    console.error('There was a problem :(');
+    console.error(err);
+    showMessage("Great, you broke it.");
     clearImage = true;
   });
 }
