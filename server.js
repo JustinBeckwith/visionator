@@ -38,26 +38,53 @@ app.get('/', (req, res, next) => {
 app.post('/sendpic', upload.array(), (req, res, next) => {
   // grab the base64 encoded image from the request and save to disk
   let pic = req.body.pic;
-  let buffer = new Buffer(pic, 'base64');
-  fs.writeFile('/tmp')
+  logger.info(`pic length: ${pic.length}`);
+  pic = pic.split("data:image/png;base64,")[1]
+  logger.info(`pic length: ${pic.length}`);
 
-  logger.info(pic.length);
-  //pic = pic.split("data:image/png;base64,")[1]
-  //console.log(pic);
-  
-  vision.detect(pic, types, (err, detections, apiResponse) => {
+  // store the file on disk 
+  stashFile(pic, (err, filePath) => {
+
     if (err) {
-      logger.error('error analyzing image...');
-      res.status(500).send('Error analyzing image.');
+      res.status(500).send('Error acquiring image.');
       return next(err);
     }
-    logger.info('got it!');
-    logger.info(detections);
 
-    // return the results to the browser
-    res.json(detections);
+    // use the cloud vision API to find stuff
+    logger.info('analyzing the image...');
+    vision.detect(filePath, types, (err, detections, apiResponse) => {
+
+      if (err) {
+        res.status(500).send('Error analyzing image.');
+        return next(err);
+      }
+
+      logger.info('Image analysis complete!');
+      logger.info(detections);
+
+      // return the results to the browser
+      res.json(detections);
+
+      // clean up the image
+      fs.unlink(filePath, (err) => {
+        if (err) {
+          logger.error(`error cleaning up file ${filePath}`);
+        }
+      });
+    });
   });
 });
+
+// This is a temporary work around until the Cloud Vision API
+// supports streaming files directly.   
+const stashFile = (data, callback) => {
+  let buffer = new Buffer(data, 'base64');
+  let filePath = path.join(__dirname, 'tmp', uuid.v4());
+  logger.info(`stashing file on disk at ${filePath}`);
+  fs.writeFile(filePath, buffer, (err) => {
+    callback(err, filePath);
+  });
+}
 
 // Start the server
 const server = app.listen(process.env.PORT || 8080, 
