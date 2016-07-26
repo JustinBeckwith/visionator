@@ -11,8 +11,6 @@ function onload() {
   startbutton = document.getElementById('startbutton');
   canvas = document.getElementById('canvas');
   ctx = canvas.getContext('2d');
-  ctx.strokeStyle = "#3E82F7";
-  ctx.fillStyle = "#3E82F7";
 
   navigator.getMedia = ( navigator.getUserMedia ||
                          navigator.webkitGetUserMedia ||
@@ -84,12 +82,16 @@ function takepicture() {
     if (features.labels.length > 0) {
       var text = features.labels.join(', ');
       showMessage(text);
+    } else {
+      message.style.display = 'none';
     }
 
     clearImage = true;
     
+    ctx.beginPath();
+    ctx.strokeStyle = "#3E82F7";
+    ctx.fillStyle = "#3E82F7";
     for (var face of features.faces) {
-      ctx.beginPath();
       var startPoint = face.bounds.face[face.bounds.face.length-1];
       ctx.moveTo(startPoint.x, startPoint.y);
       for (var point of face.bounds.face) {
@@ -98,6 +100,7 @@ function takepicture() {
       };
       ctx.stroke();
     }
+    ctx.closePath();
 
   }).catch((err) => {
     console.error('There was a problem :(');
@@ -118,13 +121,6 @@ function showMessage(text, dotdot) {
     dotdotInterval = setInterval(() => {
       messageText.innerText = messageText.innerText + ".";
     }, 500);
-  }
-}
-
-function hideMessage() {
-  message.style.display = 'none';
-  if (dotdotInterval) {
-    clearInterval(dotdotInterval);
   }
 }
 
