@@ -1,0 +1,34 @@
+{
+  "name": "cloud-visionator",
+  "version": "1.0.0",
+  "description": "This is a simple demonstration of using the Google Cloud Vision API to detect elements using a webcam. ",
+  "main": "index.js",
+  "scripts": {
+    "start": "GCLOUD_PROJECT=nodesummit node server.js",
+    "debug": "GCLOUD_PROJECT=nodesummit node --inspect server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JustinBeckwith/node-cloud-visionator.git"
+  },
+  "author": "Justin Beckwith <justin.beckwith@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JustinBeckwith/node-cloud-visionator/issues"
+  },
+  "homepage": "https://github.com/JustinBeckwith/node-cloud-visionator#readme",
+  "dependencies": {
+    "@google/cloud-debug": "^0.8.3",
+    "@google/cloud-errors": "0.0.1",
+    "@google/cloud-trace": "^0.5.5",
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "gcloud": "^0.37.0",
+    "multer": "^1.1.0",
+    "node-uuid": "^1.4.7",
+    "serve-favicon": "^2.3.0",
+    "swig": "^1.4.2",
+    "winston": "^2.2.0"
+  }
+}

@@ -1,0 +1,89 @@
+html, body {
+  margin: 0px;
+  padding: 0px;
+  width: 100%;
+  height: 100%;
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px;
+}
+
+#video {
+  width:100%;
+  height:100%;
+  background-color: #111;
+}
+
+#photo {
+  margin-left: auto;
+  margin-right: auto;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  position: absolute;
+  display: none;
+}
+
+#canvas {
+  display:none;
+}
+
+.camera {
+  width: 100%;
+  height: 100%
+}
+
+#startbutton {
+  display:block;
+  position:relative;
+  margin-left:auto;
+  margin-right:auto;
+  bottom:32px;
+  background-color: rgba(0, 150, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0px 0px 1px 2px rgba(0, 0, 0, 0.2);
+  font-size: 14px;
+  font-family: "Lucida Grande", "Arial", sans-serif;
+  color: rgba(255, 255, 255, 1.0);
+}
+
+.contentarea {
+  font-size: 16px;
+  font-family: "Lucida Grande", "Arial", sans-serif;
+  width: 760px;
+}
+
+#message {
+  color: #EEE;
+  height: 75px;
+  position: absolute;
+  padding: 20px;
+  vertical-align: middle;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+  margin-top: auto;
+  margin-bottom: auto;
+  background: rgba(62,130,247,0.90);
+  display: none;
+  z-index: 5;
+}
+
+#message-subtext {
+  color: #EEE;
+  font-size: 12px;
+}
+
+#message-content {
+  max-width: 600px;
+  width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+#message button {
+  float: right;
+  width: 75px;
+  height: 35px;
+}
+
