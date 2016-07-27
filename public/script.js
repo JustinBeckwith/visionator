@@ -46,6 +46,12 @@ function onload() {
     takepicture();
     ev.preventDefault();
   }, false);
+
+  document.body.onkeyup = function(e){
+    //Take Picture on Spacebar
+    if(e.keyCode == 32){ takepicture();}
+  }
+
 }
 
 function takepicture() {
@@ -77,8 +83,8 @@ function takepicture() {
     clearImage = true;
     
     ctx.beginPath();
-    ctx.strokeStyle = "#3E82F7";
-    ctx.fillStyle = "#3E82F7";
+    ctx.strokeStyle = "#80ff80";
+    ctx.fillStyle = "#80ff80";
     for (var face of features.faces) {
       var startPoint = face.bounds.face[face.bounds.face.length-1];
       ctx.moveTo(startPoint.x, startPoint.y);
@@ -92,7 +98,7 @@ function takepicture() {
 
     setTimeout(() => {
       videoStart();
-    },5000)
+    },8134)
 
   }).catch((err) => {
     console.error('There was a problem :(');
