@@ -1,10 +1,9 @@
 var width = 320;
 var height = 0;
-var video, canvas, photo, startbutton, okBtn, streaming,
+var video, canvas, photo, startbutton, streaming,
     message, clearImage, dotdotInterval, ctx, handle;
 
 function onload() {
-  okBtn = document.getElementById('okBtn');
   message = document.getElementById('message');
   video = document.getElementById('video');
   photo = document.getElementById('photo');
@@ -47,14 +46,6 @@ function onload() {
     takepicture();
     ev.preventDefault();
   }, false);
-
-  okBtn.addEventListener('click',() => {
-    message.style.display = 'none';
-    if (clearImage) {
-      clearImage = false;
-      videoStart();
-    }
-  });
 }
 
 function takepicture() {
@@ -78,13 +69,10 @@ function takepicture() {
     console.log(features);
     var found = false;
     
-    // show labels if available
-    if (features.labels.length > 0) {
-      var text = features.labels.join(', ');
-      showMessage(text);
-    } else {
-      message.style.display = 'none';
-    }
+    // show labels and text
+    displayList(features.labels, document.getElementById("labels"));
+    displayList(features.text, document.getElementById("text"));
+    message.style.display = 'none';
 
     clearImage = true;
     
@@ -101,6 +89,10 @@ function takepicture() {
       ctx.stroke();
     }
     ctx.closePath();
+
+    setTimeout(() => {
+      videoStart();
+    },5000)
 
   }).catch((err) => {
     console.error('There was a problem :(');
@@ -121,6 +113,15 @@ function showMessage(text, dotdot) {
     dotdotInterval = setInterval(() => {
       messageText.innerText = messageText.innerText + ".";
     }, 500);
+  }
+}
+
+function displayList(array, element) {
+  element.innerHTML = '';
+  for (var i = 0; i < array.length; i++){
+    var li = document.createElement("li");
+    li.appendChild(document.createTextNode(array[i]));
+    element.appendChild(li);
   }
 }
 

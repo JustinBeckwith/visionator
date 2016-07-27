@@ -9,13 +9,20 @@
   <div id="message">
     <div id="message-content">
       <div id="message-text">Hey... no using a phone!</div>
-      <button id="okBtn">Ok</button>
     </div>
   </div>
   <div class="camera">
-    <canvas id="canvas"></canvas>
+    <canvas id="canvas" style="float:left"></canvas>
+    <div style="float:left; color:#FFF; padding-left:20px; width:200px;">
+      <h2>Labels:</h2>
+      <ul id="labels">
+      </ul>
+      <h2>Text:</h2>
+      <ul id="text">
+      </ul>
+      <button id="startbutton" style="margin-top:50px">Take photo</button>
+    </div>
     <video id="video">Video stream not available.</video>
-    <button id="startbutton">Take photo</button>
   </div>
   
   <img id="photo">
