@@ -3,13 +3,13 @@
 require('@google/cloud-trace').start();
 require('@google/cloud-debug');
 
-const errors = require('@google/cloud-errors')();
+const errors = require('@google/cloud-errors').start();
 const express = require('express');
 const swig = require('swig');
 const path = require('path');
 const favicon = require('serve-favicon');
 const multer  = require('multer')
-const gcloud = require('gcloud');
+const gcloud = require('google-cloud');
 const fs = require('fs');
 const logger = require('./logger');
 const uuid = require('node-uuid');
@@ -38,9 +38,7 @@ app.get('/', (req, res, next) => {
 app.post('/sendpic', upload.array(), (req, res, next) => {
   // grab the base64 encoded image from the request and save to disk
   let pic = req.body.pic;
-  logger.info(`pic length: ${pic.length}`);
   pic = pic.split("data:image/png;base64,")[1]
-  logger.info(`pic length: ${pic.length}`);
 
   // store the file on disk 
   stashFile(pic, (err, filePath) => {

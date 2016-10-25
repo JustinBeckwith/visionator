@@ -1,7 +1,5 @@
-var width = 320;
-var height = 0;
-var video, canvas, photo, startbutton, okBtn, streaming,
-    message, clearImage, dotdotInterval, ctx, handle;
+var width = 320, height = 0, video, canvas, photo, startbutton, okBtn, 
+  streaming, message, clearImage, dotdotInterval, ctx, handle;
 
 function onload() {
   okBtn = document.getElementById('okBtn');
