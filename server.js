@@ -1,5 +1,3 @@
-'use strict';
-
 require('@google/cloud-trace').start();
 require('@google/cloud-debug');
 
@@ -9,13 +7,14 @@ const swig = require('swig');
 const path = require('path');
 const favicon = require('serve-favicon');
 const multer  = require('multer')
-const gcloud = require('google-cloud');
 const fs = require('fs');
 const logger = require('./logger');
-const uuid = require('node-uuid');
+const uuid = require('uuid');
+const vision = require('@google-cloud/vision')({
+  projectId: 'nodeinteractive',
+  keyFilename: __dirname + '/keyfile.json'
+});
 
-// use the vision API
-const vision = gcloud.vision();
 const types = [ 'faces', 'landmarks', 'labels', 
                 'logos', 'properties', 'safeSearch', 'text'];
 
@@ -27,7 +26,7 @@ app.engine('html', swig.renderFile);
 app.set('view engine', 'html');
 app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(errors.express);
+//app.use(errors.express);
 
 // show the index page
 app.get('/', (req, res, next) => {
@@ -77,7 +76,7 @@ app.post('/sendpic', upload.array(), (req, res, next) => {
 // supports streaming files directly.   
 const stashFile = (data, callback) => {
   let buffer = new Buffer(data, 'base64');
-  let filePath = path.join(__dirname, 'tmp', uuid.v4());
+  let filePath = path.join(__dirname, 'tmp', uuid());
   logger.info(`stashing file on disk at ${filePath}`);
   fs.writeFile(filePath, buffer, (err) => {
     callback(err, filePath);
