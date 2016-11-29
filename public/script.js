@@ -53,6 +53,17 @@ function onload() {
       videoStart();
     }
   });
+
+  document.addEventListener('keydown', (event) => {
+    if (clearImage) {
+      message.style.display = 'none';
+      clearImage = false;
+      videoStart();
+    } else if (event.code === 'Space' || event.code === 'Enter') { 
+      takepicture();
+    }
+  }, false);
+
 }
 
 function takepicture() {
