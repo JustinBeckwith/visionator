@@ -2,7 +2,6 @@ var width = 320, height = 0, video, canvas, photo, startbutton, okBtn,
   streaming, message, clearImage, dotdotInterval, ctx, handle;
 
 function onload() {
-  okBtn = document.getElementById('okBtn');
   message = document.getElementById('message');
   video = document.getElementById('video');
   photo = document.getElementById('photo');
@@ -46,23 +45,10 @@ function onload() {
     ev.preventDefault();
   }, false);
 
-  okBtn.addEventListener('click',() => {
-    message.style.display = 'none';
-    if (clearImage) {
-      clearImage = false;
-      videoStart();
-    }
-  });
-
-  document.addEventListener('keydown', (event) => {
-    if (clearImage) {
-      message.style.display = 'none';
-      clearImage = false;
-      videoStart();
-    } else if (event.code === 'Space' || event.code === 'Enter') { 
-      takepicture();
-    }
-  }, false);
+  document.body.onkeyup = function(e){
+    //Take Picture on Spacebar
+    if(e.keyCode == 32){ takepicture();}
+  }
 
 }
 
@@ -87,19 +73,16 @@ function takepicture() {
     console.log(features);
     var found = false;
     
-    // show labels if available
-    if (features.labels.length > 0) {
-      var text = features.labels.join(', ');
-      showMessage(text);
-    } else {
-      message.style.display = 'none';
-    }
+    // show labels and text
+    displayList(features.labels, document.getElementById("labels"));
+    displayList(features.text, document.getElementById("text"));
+    message.style.display = 'none';
 
     clearImage = true;
     
     ctx.beginPath();
-    ctx.strokeStyle = "#3E82F7";
-    ctx.fillStyle = "#3E82F7";
+    ctx.strokeStyle = "#80ff80";
+    ctx.fillStyle = "#80ff80";
     for (var face of features.faces) {
       var startPoint = face.bounds.face[face.bounds.face.length-1];
       ctx.moveTo(startPoint.x, startPoint.y);
@@ -110,6 +93,10 @@ function takepicture() {
       ctx.stroke();
     }
     ctx.closePath();
+
+    setTimeout(() => {
+      videoStart();
+    },8134)
 
   }).catch((err) => {
     console.error('There was a problem :(');
@@ -130,6 +117,15 @@ function showMessage(text, dotdot) {
     dotdotInterval = setInterval(() => {
       messageText.innerText = messageText.innerText + ".";
     }, 500);
+  }
+}
+
+function displayList(array, element) {
+  element.innerHTML = '';
+  for (var i = 0; i < array.length; i++){
+    var li = document.createElement("li");
+    li.appendChild(document.createTextNode(array[i]));
+    element.appendChild(li);
   }
 }
 
