@@ -1,7 +1,9 @@
-require('@google/cloud-trace').start();
-require('@google/cloud-debug');
-
-const errors = require('@google/cloud-errors').start();
+const config = {
+  projectId: 'nodesummit',
+  keyFilename: __dirname + '/keyfile.json'
+}
+require('@google-cloud/trace-agent').start(config);
+require('@google-cloud/debug-agent').start(Object.assign({ allowExpressions: true }, config));
 const express = require('express');
 const swig = require('swig');
 const path = require('path');
@@ -10,12 +12,10 @@ const multer  = require('multer')
 const fs = require('fs');
 const logger = require('./logger');
 const uuid = require('uuid');
-const vision = require('@google-cloud/vision')({
-  projectId: 'nodeinteractive',
-  keyFilename: __dirname + '/keyfile.json'
-});
+const vision = require('@google-cloud/vision')(config);
 
-const types = [ 'faces', 'landmarks', 'labels', 
+
+const types = [ 'faces', 'landmarks', 'labels',
                 'logos', 'properties', 'safeSearch', 'text'];
 
 // express setup
@@ -26,7 +26,6 @@ app.engine('html', swig.renderFile);
 app.set('view engine', 'html');
 app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(express.static(path.join(__dirname, 'public')));
-//app.use(errors.express);
 
 // show the index page
 app.get('/', (req, res, next) => {
@@ -37,9 +36,9 @@ app.get('/', (req, res, next) => {
 app.post('/sendpic', upload.array(), (req, res, next) => {
   // grab the base64 encoded image from the request and save to disk
   let pic = req.body.pic;
-  pic = pic.split("data:image/png;base64,")[1]
+  pic = pic.split("data:image/png;base64,")[1];
 
-  // store the file on disk 
+  // store the file on disk
   stashFile(pic, (err, filePath) => {
 
     if (err) {
@@ -73,7 +72,7 @@ app.post('/sendpic', upload.array(), (req, res, next) => {
 });
 
 // This is a temporary work around until the Cloud Vision API
-// supports streaming files directly.   
+// supports streaming files directly.
 const stashFile = (data, callback) => {
   let buffer = new Buffer(data, 'base64');
   let filePath = path.join(__dirname, 'tmp', uuid());
@@ -84,9 +83,9 @@ const stashFile = (data, callback) => {
 }
 
 // Start the server
-const server = app.listen(process.env.PORT || 8080, 
+const server = app.listen(process.env.PORT || 3000,
     '0.0.0.0', () => {
-    console.log('App listening at http://%s:%s', 
+    console.log('App listening at http://%s:%s',
         server.address().address,
         server.address().port);
     console.log('Press Ctrl+C to quit.');
