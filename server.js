@@ -1,5 +1,5 @@
 const config = {
-  projectId: 'nodesummit',
+  projectId: 'nodeinteractive',
   keyFilename: __dirname + '/keyfile.json'
 }
 require('@google-cloud/trace-agent').start(config);
