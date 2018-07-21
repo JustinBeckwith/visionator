@@ -1,1 +1,13 @@
 runtime: nodejs8
+
+handlers:
+  - url: /favicon\.ico
+    static_files: public/favicon.ico
+
+  - url: /public
+    static_dir: public
+
+  - url: /.*
+    secure: always
+    redirect_http_response_code: 301
+    script: auto
