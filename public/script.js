@@ -1,4 +1,4 @@
-var width = 320, height = 0, video, canvas, photo, startbutton, okBtn, 
+var width = 320, height = 0, video, canvas, photo, startbutton, okBtn,
   streaming, message, clearImage, dotdotInterval, ctx, handle;
 
 function onload() {
@@ -60,7 +60,7 @@ function takepicture() {
   videoPause();
 
   showMessage('Detecting stuff. We can tell by the pixels o.0', true);
-  
+
   var form = new FormData()
   form.append('pic', data);
 
@@ -72,21 +72,22 @@ function takepicture() {
   }).then((features) => {
     console.log(features);
     var found = false;
-    
+
     // show labels and text
-    displayList(features.labels, document.getElementById("labels"));
-    displayList(features.text, document.getElementById("text"));
+    displayList(features.labelAnnotations, document.getElementById("labels"));
+    displayList(features.textAnnotations, document.getElementById("text"));
     message.style.display = 'none';
 
     clearImage = true;
-    
+
     ctx.beginPath();
     ctx.strokeStyle = "#80ff80";
     ctx.fillStyle = "#80ff80";
-    for (var face of features.faces) {
-      var startPoint = face.bounds.face[face.bounds.face.length-1];
+    for (var face of features.faceAnnotations) {
+      var startPoint = face.boundingPoly.vertices[face.boundingPoly.vertices.length-1];
+      console.log(startPoint);
       ctx.moveTo(startPoint.x, startPoint.y);
-      for (var point of face.bounds.face) {
+      for (var point of face.boundingPoly.vertices) {
         ctx.fillRect(point.x-3, point.y-3, 7, 7);
         ctx.lineTo(point.x, point.y);
       };
@@ -124,7 +125,7 @@ function displayList(array, element) {
   element.innerHTML = '';
   for (var i = 0; i < array.length; i++){
     var li = document.createElement("li");
-    li.appendChild(document.createTextNode(array[i]));
+    li.appendChild(document.createTextNode(array[i].description));
     element.appendChild(li);
   }
 }

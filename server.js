@@ -1,92 +1,56 @@
-const config = {
-  projectId: 'nodeinteractive',
-  keyFilename: __dirname + '/keyfile.json'
-}
-require('@google-cloud/trace-agent').start(config);
-require('@google-cloud/debug-agent').start(Object.assign({ allowExpressions: true }, config));
-const express = require('express');
-const swig = require('swig');
-const path = require('path');
-const favicon = require('serve-favicon');
-const multer  = require('multer')
-const fs = require('fs');
-const logger = require('./logger');
-const uuid = require('uuid');
-const vision = require('@google-cloud/vision')(config);
+require("@google-cloud/trace-agent").start();
+require("@google-cloud/debug-agent").start(
+  Object.assign({ allowExpressions: true })
+);
+const express = require("express");
+const swig = require("swig");
+const path = require("path");
+const favicon = require("serve-favicon");
+const multer = require("multer");
+const logger = require("./logger");
+const vision = require("@google-cloud/vision");
 
+const client = new vision.ImageAnnotatorClient();
 
-const types = [ 'faces', 'landmarks', 'labels',
-                'logos', 'properties', 'safeSearch', 'text'];
+const features = [{ type: 1 }, { type: 4 }, { type: 5 }];
 
 // express setup
 const app = express();
-const upload = multer()
-app.set('views', path.join(__dirname, 'views'));
-app.engine('html', swig.renderFile);
-app.set('view engine', 'html');
-app.use(favicon(__dirname + '/public/favicon.ico'));
-app.use(express.static(path.join(__dirname, 'public')));
+const upload = multer();
+app.set("views", path.join(__dirname, "views"));
+app.engine("html", swig.renderFile);
+app.set("view engine", "html");
+app.use(favicon(__dirname + "/public/favicon.ico"));
+app.use(express.static(path.join(__dirname, "public")));
 
 // show the index page
-app.get('/', (req, res, next) => {
-  res.render('index');
+app.get("/", (req, res, next) => {
+  res.render("index");
 });
 
 // find objects in the picture with the cloud vision API
-app.post('/sendpic', upload.array(), (req, res, next) => {
+app.post("/sendpic", upload.array(), async (req, res, next) => {
   // grab the base64 encoded image from the request and save to disk
-  let pic = req.body.pic;
-  pic = pic.split("data:image/png;base64,")[1];
+  const picBase64 = req.body.pic.split("data:image/png;base64,")[1];
+  const image = Buffer.from(picBase64, "base64");
 
-  // store the file on disk
-  stashFile(pic, (err, filePath) => {
+  // use the cloud vision API to find stuff
+  logger.info("analyzing the image...");
+  const [detections] = await client.annotateImage({ image, features });
 
-    if (err) {
-      res.status(500).send('Error acquiring image.');
-      return next(err);
-    }
+  logger.info("Image analysis complete!");
+  logger.info(detections);
 
-    // use the cloud vision API to find stuff
-    logger.info('analyzing the image...');
-    vision.detect(filePath, types, (err, detections, apiResponse) => {
-
-      if (err) {
-        res.status(500).send('Error analyzing image.');
-        return next(err);
-      }
-
-      logger.info('Image analysis complete!');
-      logger.info(detections);
-
-      // return the results to the browser
-      res.json(detections);
-
-      // clean up the image
-      fs.unlink(filePath, (err) => {
-        if (err) {
-          logger.error(`error cleaning up file ${filePath}`);
-        }
-      });
-    });
-  });
+  // return the results to the browser
+  res.json(detections);
 });
 
-// This is a temporary work around until the Cloud Vision API
-// supports streaming files directly.
-const stashFile = (data, callback) => {
-  let buffer = new Buffer(data, 'base64');
-  let filePath = path.join(__dirname, 'tmp', uuid());
-  logger.info(`stashing file on disk at ${filePath}`);
-  fs.writeFile(filePath, buffer, (err) => {
-    callback(err, filePath);
-  });
-}
-
 // Start the server
-const server = app.listen(process.env.PORT || 3000,
-    '0.0.0.0', () => {
-    console.log('App listening at http://%s:%s',
-        server.address().address,
-        server.address().port);
-    console.log('Press Ctrl+C to quit.');
+const server = app.listen(process.env.PORT || 3000, "0.0.0.0", () => {
+  console.log(
+    "App listening at http://%s:%s",
+    server.address().address,
+    server.address().port
+  );
+  console.log("Press Ctrl+C to quit.");
 });

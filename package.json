@@ -1,12 +1,10 @@
 {
   "name": "cloud-visionator",
-  "version": "1.0.0",
-  "description": "This is a simple demonstration of using the Google Cloud Vision API to detect elements using a webcam. ",
-  "main": "server.js",
+  "private": true,
+  "description": "This is a simple demonstration of using the Google Cloud Vision API to detect elements using a webcam.",
   "scripts": {
-    "start": "GCLOUD_PROJECT=nodeinteractive node server.js",
-    "debug": "GCLOUD_PROJECT=nodeinteractive node --inspect server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "GCLOUD_PROJECT=cloud-visionator GOOGLE_APPLICATION_CREDENTIALS=./keyfile.json node server.js",
+    "fix": "prettier *.js --write"
   },
   "repository": {
     "type": "git",
@@ -17,22 +15,22 @@
   "bugs": {
     "url": "https://github.com/JustinBeckwith/node-cloud-visionator/issues"
   },
-  "engines": {
-    "node": "7.2.0"
-  },
   "homepage": "https://github.com/JustinBeckwith/node-cloud-visionator#readme",
   "dependencies": {
-    "@google-cloud/debug-agent": "^2.1.3",
-    "@google-cloud/error-reporting": "^0.2.1",
-    "@google-cloud/logging-winston": "^0.5.0",
-    "@google-cloud/trace-agent": "^2.1.2",
-    "@google-cloud/vision": "^0.11.5",
-    "body-parser": "^1.18.2",
-    "express": "^4.16.1",
-    "multer": "^1.3.0",
-    "serve-favicon": "^2.4.5",
+    "@google-cloud/debug-agent": "^2.6.0",
+    "@google-cloud/error-reporting": "^0.5.1",
+    "@google-cloud/logging-bunyan": "^0.8.2",
+    "@google-cloud/trace-agent": "^3.0.0",
+    "@google-cloud/vision": "^0.21.0",
+    "body-parser": "^1.18.3",
+    "bunyan": "^1.8.12",
+    "express": "^4.16.3",
+    "multer": "^1.3.1",
+    "serve-favicon": "^2.5.0",
     "swig": "^1.4.2",
-    "uuid": "^3.1.0",
-    "winston": "^2.4.0"
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "prettier": "^1.13.7"
   }
 }

@@ -1,15 +1,10 @@
-const winston = require('winston');
-const gcpTransport = require('@google-cloud/logging-winston');
-
-var logger = new (winston.Logger)({
-  transports: [
-    new winston.transports.Console({
-      handleExceptions: true
-    }),
-    new gcpTransport({
-      keyFilename: 'keyfile.json'
-    })
-  ]
+const bunyan = require("bunyan");
+const { LoggingBunyan } = require("@google-cloud/logging-bunyan");
+const loggingBunyan = new LoggingBunyan();
+const logger = bunyan.createLogger({
+  name: "node-cloud-visionator",
+  level: "info",
+  streams: [{ stream: process.stdout }, loggingBunyan.stream()]
 });
 
 module.exports = logger;
