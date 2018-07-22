@@ -17,20 +17,20 @@
   },
   "homepage": "https://github.com/JustinBeckwith/node-cloud-visionator#readme",
   "dependencies": {
-    "@google-cloud/debug-agent": "^2.6.0",
-    "@google-cloud/error-reporting": "^0.5.1",
-    "@google-cloud/logging-bunyan": "^0.8.2",
-    "@google-cloud/trace-agent": "^3.0.0",
-    "@google-cloud/vision": "^0.21.0",
-    "body-parser": "^1.18.3",
-    "bunyan": "^1.8.12",
-    "express": "^4.16.3",
-    "multer": "^1.3.1",
-    "serve-favicon": "^2.5.0",
-    "swig": "^1.4.2",
-    "uuid": "^3.3.2"
+    "@google-cloud/debug-agent": "2.6.0",
+    "@google-cloud/error-reporting": "0.5.1",
+    "@google-cloud/logging-bunyan": "0.8.2",
+    "@google-cloud/trace-agent": "3.0.0",
+    "@google-cloud/vision": "0.21.0",
+    "body-parser": "1.18.3",
+    "bunyan": "1.8.12",
+    "express": "4.16.3",
+    "multer": "1.3.1",
+    "serve-favicon": "2.5.0",
+    "swig": "1.4.2",
+    "uuid": "3.3.2"
   },
   "devDependencies": {
-    "prettier": "^1.13.7"
+    "prettier": "1.13.7"
   }
 }
