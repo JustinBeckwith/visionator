@@ -3,7 +3,6 @@ require("@google-cloud/debug-agent").start(
   Object.assign({ allowExpressions: true })
 );
 const express = require("express");
-const swig = require("swig");
 const path = require("path");
 const favicon = require("serve-favicon");
 const multer = require("multer");
@@ -17,9 +16,6 @@ const features = [{ type: 1 }, { type: 4 }, { type: 5 }];
 // express setup
 const app = express();
 const upload = multer();
-app.set("views", path.join(__dirname, "views"));
-app.engine("html", swig.renderFile);
-app.set("view engine", "html");
 app.use(favicon(__dirname + "/public/favicon.ico"));
 app.use(express.static(path.join(__dirname, "public")));
 
