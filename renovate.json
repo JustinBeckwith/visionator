@@ -1,5 +1,16 @@
 {
   "extends": [
-    "config:base"
-  ]
+    "config:base",
+    "docker:disable"
+  ],
+  "pinVersions": false,
+  "rebaseStalePrs": true,
+  "lockFileMaintenance": {
+    "enabled": true,
+    "recreateClosed": true,
+    "schedule": [
+      "before 10am on tuesday"
+    ]
+  },
+  "gitAuthor": null
 }
