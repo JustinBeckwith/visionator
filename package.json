@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/JustinBeckwith/node-cloud-visionator#readme",
   "dependencies": {
-    "@google-cloud/debug-agent": "^3.0.0",
+    "@google-cloud/debug-agent": "^4.0.0",
     "@google-cloud/error-reporting": "^0.5.1",
     "@google-cloud/logging-bunyan": "^2.0.0",
     "@google-cloud/trace-agent": "^3.0.0",
