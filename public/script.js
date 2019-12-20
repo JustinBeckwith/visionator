@@ -1,34 +1,29 @@
-var width = 320, height = 0, video, canvas, photo, startbutton, okBtn,
-  streaming, message, clearImage, dotdotInterval, ctx, handle;
+let width = 320;
+let height = 0;
+let video;
+let canvas;
+let photo;
+let streaming;
+let message;
+let dotdotInterval;
+let ctx;
+let handle;
 
-function onload() {
+window.onload = async () => {
   message = document.getElementById('message');
   video = document.getElementById('video');
   photo = document.getElementById('photo');
-  startbutton = document.getElementById('startbutton');
+  const startbutton = document.getElementById('startbutton');
   canvas = document.getElementById('canvas');
   ctx = canvas.getContext('2d');
 
-  navigator.getMedia = ( navigator.getUserMedia ||
-                         navigator.webkitGetUserMedia ||
-                         navigator.mozGetUserMedia ||
-                         navigator.msGetUserMedia);
+  const stream = await navigator.mediaDevices.getUserMedia({
+    video: true
+  });
+  video.srcObject = stream;
+  await videoStart();
 
-  navigator.getMedia({
-      video: true,
-      audio: false
-    },
-    (stream) => {
-      var vendorURL = window.URL || window.webkitURL;
-      video.src = vendorURL.createObjectURL(stream);
-      videoStart();
-    },
-    (err) => {
-      console.error("An error occured! " + err);
-    }
-  );
-
-  video.addEventListener('canplay', (ev) => {
+  video.addEventListener('canplay', ev => {
     if (!streaming) {
       height = video.videoHeight;
       width = video.videoWidth;
@@ -40,75 +35,63 @@ function onload() {
     }
   }, false);
 
-  startbutton.addEventListener('click', (ev) => {
-    takepicture();
+  startbutton.addEventListener('click', async ev => {
+    await takepicture();
     ev.preventDefault();
   }, false);
 
-  document.body.onkeyup = function(e){
-    //Take Picture on Spacebar
-    if(e.keyCode == 32){ takepicture();}
-  }
+  document.body.onkeyup = async e => {
+    // Take Picture on Spacebar
+    if (e.keyCode === 32) {
+      await takepicture();
+    }
+  };
+};
 
-}
-
-function takepicture() {
-  var data = canvas.toDataURL('image/png');
+async function takepicture () {
+  const data = canvas.toDataURL('image/png');
   photo.setAttribute('src', data);
   photo.style.height = video.offsetHeight;
 
-  videoPause();
+  await videoPause();
 
   showMessage('Detecting stuff. We can tell by the pixels o.0', true);
 
-  var form = new FormData()
+  const form = new window.FormData();
   form.append('pic', data);
 
-  fetch("/sendpic", {
-    method: "POST",
+  const res = await window.fetch('/sendpic', {
+    method: 'POST',
     body: form
-  }).then((response) => {
-    return response.json();
-  }).then((features) => {
-    console.log(features);
-    var found = false;
-
-    // show labels and text
-    displayList(features.labelAnnotations, document.getElementById("labels"));
-    displayList(features.textAnnotations, document.getElementById("text"));
-    message.style.display = 'none';
-
-    clearImage = true;
-
-    ctx.beginPath();
-    ctx.strokeStyle = "#80ff80";
-    ctx.fillStyle = "#80ff80";
-    for (var face of features.faceAnnotations) {
-      var startPoint = face.boundingPoly.vertices[face.boundingPoly.vertices.length-1];
-      console.log(startPoint);
-      ctx.moveTo(startPoint.x, startPoint.y);
-      for (var point of face.boundingPoly.vertices) {
-        ctx.fillRect(point.x-3, point.y-3, 7, 7);
-        ctx.lineTo(point.x, point.y);
-      };
-      ctx.stroke();
-    }
-    ctx.closePath();
-
-    setTimeout(() => {
-      videoStart();
-    },8134)
-
-  }).catch((err) => {
-    console.error('There was a problem :(');
-    console.error(err);
-    showMessage("Great, you broke it.");
-    clearImage = true;
   });
+  const features = await res.json();
+  console.log(features);
+  // show labels and text
+  displayList(features.labelAnnotations, document.getElementById('labels'));
+  displayList(features.textAnnotations, document.getElementById('text'));
+  message.style.display = 'none';
+  ctx.beginPath();
+  ctx.strokeStyle = '#80ff80';
+  ctx.fillStyle = '#80ff80';
+  for (const face of features.faceAnnotations) {
+    const startPoint = face.boundingPoly.vertices[face.boundingPoly.vertices.length - 1];
+    console.log(startPoint);
+    ctx.moveTo(startPoint.x, startPoint.y);
+    for (const point of face.boundingPoly.vertices) {
+      ctx.fillRect(point.x - 3, point.y - 3, 7, 7);
+      ctx.lineTo(point.x, point.y);
+    }
+    ctx.stroke();
+  }
+  ctx.closePath();
+  setTimeout(() => {
+    console.log('wat');
+    videoStart();
+  }, 8134);
 }
 
-function showMessage(text, dotdot) {
-  var messageText = document.getElementById('message-text');
+function showMessage (text, dotdot) {
+  const messageText = document.getElementById('message-text');
   messageText.innerText = text;
   message.style.display = 'inline-block';
   if (dotdotInterval) {
@@ -116,30 +99,30 @@ function showMessage(text, dotdot) {
   }
   if (dotdot) {
     dotdotInterval = setInterval(() => {
-      messageText.innerText = messageText.innerText + ".";
+      messageText.innerText = messageText.innerText + '.';
     }, 500);
   }
 }
 
-function displayList(array, element) {
+function displayList (array, element) {
   element.innerHTML = '';
-  for (var i = 0; i < array.length; i++){
-    var li = document.createElement("li");
+  for (let i = 0; i < array.length; i++) {
+    const li = document.createElement('li');
     li.appendChild(document.createTextNode(array[i].description));
     element.appendChild(li);
   }
 }
 
-function videoStart() {
-  video.play();
+async function videoStart () {
+  await video.play();
   handle = setInterval(() => {
     ctx.drawImage(video, 0, 0, width, height);
   }, 20);
 }
 
-function videoPause() {
+async function videoPause () {
   if (handle) {
     clearInterval(handle);
   }
-  video.pause();
+  await video.pause();
 }
