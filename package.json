@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/JustinBeckwith/visionator#readme",
   "dependencies": {
-    "@google-cloud/debug-agent": "^4.2.1",
+    "@google-cloud/debug-agent": "^5.0.0",
     "@google-cloud/logging-bunyan": "^2.0.2",
     "@google-cloud/trace-agent": "^4.2.4",
     "@google-cloud/vision": "^1.7.2",
